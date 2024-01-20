@@ -18,13 +18,37 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+// Checks for invalid date.
+const invalidDate = (date) => date.toUTCCString() === "Invalid Date";
 
 // your first API endpoint... 
-app.get("/api/hello", function (req, res) {
-  res.json({greeting: 'hello API'});
+app.get("/api/:date", function (req, res) {
+  let date = new Date(req.params.date);
+
+  if(invalidDate(date)) {
+    // '+' symbol in front of a string turns it into a number.
+    date = new Date(+req.params.date);
+  }
+
+  if(invalidDate(date)) {
+    res.json({ error: date });
+    return;
+  }
+
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString()
+  });
+
 });
 
-
+// Endpoint for empty date parameter (as required).
+app.get("/api", (req, res) => {
+  res.json({
+    unix: new Date().getTime(),
+    utc: new Date().toUTCString()
+  });
+});
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
