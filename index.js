@@ -31,7 +31,7 @@ app.get("/api/:date", function (req, res) {
   }
 
   if(invalidDate(date)) {
-    res.json({ error: date });
+    res.json({ error: "Invalid Date" });
     return;
   }
 
